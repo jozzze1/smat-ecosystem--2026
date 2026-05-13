@@ -1,0 +1,21 @@
+# =========================
+# PYTHON / FASTAPI
+# =========================
+
+backend/venv/
+__pycache__/
+*.pyc
+
+# =========================
+# FLUTTER
+# =========================
+
+mobile/build/
+mobile/.dart_tool/
+mobile/.packages
+
+# =========================
+# LINUX / BINARIOS
+# =========================
+
+*.deb
