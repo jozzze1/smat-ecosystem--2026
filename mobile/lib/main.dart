@@ -34,17 +34,18 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _init();
+    _check();
   }
 
-  Future<void> _init() async {
-    await Future.delayed(const Duration(milliseconds: 400));
+  Future<void> _check() async {
+    await Future.delayed(const Duration(milliseconds: 300));
 
     final token = await AuthService().getToken();
 
     if (!mounted) return;
 
-    Navigator.of(context).pushReplacement(
+    Navigator.pushReplacement(
+      context,
       MaterialPageRoute(
         builder: (_) =>
             (token != null && token.isNotEmpty)

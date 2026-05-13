@@ -10,28 +10,25 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _userController = TextEditingController();
-  final _passController = TextEditingController();
-  bool _loading = false;
+
+  final user = TextEditingController();
+  final pass = TextEditingController();
+  bool loading = false;
 
   Future<void> login() async {
 
-    if (_userController.text.isEmpty ||
-        _passController.text.isEmpty) {
+    if (user.text.isEmpty || pass.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Completa los campos")),
+        const SnackBar(content: Text("Completa campos")),
       );
       return;
     }
 
-    setState(() => _loading = true);
+    setState(() => loading = true);
 
-    final ok = await AuthService().login(
-      _userController.text,
-      _passController.text,
-    );
+    final ok = await AuthService().login(user.text, pass.text);
 
-    setState(() => _loading = false);
+    setState(() => loading = false);
 
     if (!mounted) return;
 
@@ -42,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Credenciales incorrectas")),
+        const SnackBar(content: Text("Error login")),
       );
     }
   }
@@ -51,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Login SMAT")),
+
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -58,21 +56,21 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
 
             TextField(
-              controller: _userController,
+              controller: user,
               decoration: const InputDecoration(labelText: "Usuario"),
             ),
 
             const SizedBox(height: 10),
 
             TextField(
-              controller: _passController,
+              controller: pass,
               obscureText: true,
               decoration: const InputDecoration(labelText: "Contraseña"),
             ),
 
             const SizedBox(height: 20),
 
-            _loading
+            loading
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
                     onPressed: login,

@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   List<Estacion> estaciones = [];
   bool loading = true;
   String? error;
@@ -20,10 +21,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    loadData();
+    _load();
   }
 
-  Future<void> loadData() async {
+  Future<void> _load() async {
     setState(() {
       loading = true;
       error = null;
@@ -45,15 +46,16 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> refresh() async {
-    await loadData();
+  Future<void> _refresh() async {
+    await _load();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
-        title: const Text('SMAT - Monitoreo Móvil'),
+        title: const Text("SMAT - Monitoreo"),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -68,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                 (route) => false,
               );
             },
-          ),
+          )
         ],
       ),
 
@@ -84,11 +86,10 @@ class _HomePageState extends State<HomePage> {
                           size: 60, color: Colors.red),
                       const SizedBox(height: 10),
                       Text(error!,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.red)),
+                          textAlign: TextAlign.center),
                       const SizedBox(height: 10),
                       ElevatedButton(
-                        onPressed: loadData,
+                        onPressed: _load,
                         child: const Text("Reintentar"),
                       )
                     ],
@@ -96,24 +97,24 @@ class _HomePageState extends State<HomePage> {
                 )
 
               : RefreshIndicator(
-                  onRefresh: refresh,
+                  onRefresh: _refresh,
                   child: ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),
                     itemCount: estaciones.length,
                     itemBuilder: (context, index) {
-                      final est = estaciones[index];
+                      final e = estaciones[index];
 
                       return ListTile(
                         leading: const Icon(Icons.satellite_alt),
-                        title: Text(est.nombre),
-                        subtitle: Text(est.ubicacion),
+                        title: Text(e.nombre),
+                        subtitle: Text(e.ubicacion),
                       );
                     },
                   ),
                 ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: refresh,
+        onPressed: _refresh,
         child: const Icon(Icons.refresh),
       ),
     );
