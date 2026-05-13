@@ -185,21 +185,17 @@ class _HomePageState
 
           if (snapshot.hasError) {
 
-            return Center(
+            return const Center(
 
               child: Padding(
 
-                padding:
-                    const EdgeInsets.all(
-                        20),
+                padding: EdgeInsets.all(20),
 
                 child: Text(
 
-                  snapshot.error
-                      .toString(),
+                  "No se pudo conectar con el servidor. Verifica tu conexión o intenta más tarde.",
+                  style: TextStyle(
 
-                  style:
-                      const TextStyle(
                     color: Colors.red,
                     fontSize: 16,
                   ),
