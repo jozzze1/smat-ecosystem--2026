@@ -12,53 +12,37 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _userController = TextEditingController();
   final _passController = TextEditingController();
-  bool _isLoading = false;
+  bool _loading = false;
 
-  Future<void> _handleLogin() async {
+  Future<void> login() async {
 
-    // 🔥 VALIDACIÓN BÁSICA (IMPORTANTE)
-    if (_userController.text.isEmpty || _passController.text.isEmpty) {
+    if (_userController.text.isEmpty ||
+        _passController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Completa usuario y contraseña')),
+        const SnackBar(content: Text("Completa los campos")),
       );
       return;
     }
 
-    setState(() => _isLoading = true);
+    setState(() => _loading = true);
 
-    try {
-      bool success = await AuthService().login(
-        _userController.text,
-        _passController.text,
+    final ok = await AuthService().login(
+      _userController.text,
+      _passController.text,
+    );
+
+    setState(() => _loading = false);
+
+    if (!mounted) return;
+
+    if (ok) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
       );
-
-      if (!mounted) return;
-
-      setState(() => _isLoading = false);
-
-      if (success) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomePage()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Credenciales incorrectas'),
-          ),
-        );
-      }
-
-    } catch (e) {
-
-      if (!mounted) return;
-
-      setState(() => _isLoading = false);
-
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error de conexión con el servidor'),
-        ),
+        const SnackBar(content: Text("Credenciales incorrectas")),
       );
     }
   }
@@ -66,8 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Ingreso SMAT')),
-
+      appBar: AppBar(title: const Text("Login SMAT")),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -76,27 +59,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
             TextField(
               controller: _userController,
-              decoration: const InputDecoration(labelText: 'Usuario'),
+              decoration: const InputDecoration(labelText: "Usuario"),
             ),
 
             const SizedBox(height: 10),
 
             TextField(
               controller: _passController,
-              decoration: const InputDecoration(labelText: 'Contraseña'),
               obscureText: true,
+              decoration: const InputDecoration(labelText: "Contraseña"),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
-            _isLoading
+            _loading
                 ? const CircularProgressIndicator()
-                : SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _handleLogin,
-                      child: const Text('Iniciar Sesión'),
-                    ),
+                : ElevatedButton(
+                    onPressed: login,
+                    child: const Text("Ingresar"),
                   ),
           ],
         ),

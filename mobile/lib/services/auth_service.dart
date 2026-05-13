@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthService {
   final String baseUrl = "http://localhost:8000";
 
-  // 🔐 LOGIN REAL CON FASTAPI
+  // LOGIN REAL CON FASTAPI
   Future<bool> login(String username, String password) async {
     try {
       final response = await http.post(
@@ -40,13 +40,13 @@ class AuthService {
     return false;
   }
 
-  // 🔎 OBTENER TOKEN
+  // OBTENER TOKEN
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('jwt_token');
   }
 
-  // 🚪 LOGOUT
+  // LOGOUT
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('jwt_token');
