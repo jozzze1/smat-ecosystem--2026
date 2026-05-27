@@ -8,101 +8,87 @@ import random
 
 API_URL = "http://localhost:8000/lecturas/"
 
-ESTACION_ID = 1
+# IDs de todas las estaciones que tienes en Flutter
+ESTACIONES_IDS = [1, 2, 3, 4]
 
 # PEGA AQUÍ TU TOKEN JWT
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3OTg5NzI3Nn0.3mxLcSZRiGCdgXEJDoitoj74Dgs1WpsVgq_NtDr2Mu0"
+TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3OTkwMjUzMH0.zUEdzVqAvxudKc6Lc6C7nCdVhIMbavpnukVZx6qk4nA"
 
 # ============================================
 # SENSOR EMULADO
 # ============================================
 
 def leer_sensor_emulado():
-
     # Simula nivel de río entre 10 y 85 cm
     return round(random.uniform(10.0, 85.0), 2)
 
 # ============================================
-# ENVÍO DE TELEMETRÍA
+# ENVÍO DE TELEMETRÍA MULTI-ESTACIÓN
 # ============================================
 
 def enviar_telemetria():
-
-    print(f"--- Iniciando Emisor IoT para Estación {ESTACION_ID} ---")
+    print("--- Iniciando Emisor IoT Multi-Estación ---")
+    print(f"Monitoreando estaciones con IDs: {ESTACIONES_IDS}\n")
 
     while True:
+        hay_alerta_global = False
 
-        valor = leer_sensor_emulado()
+        # Recorremos cada estación para enviarle su propia lectura simulada
+        for estacion_id in ESTACIONES_IDS:
+            valor = leer_sensor_emulado()
 
-        payload = {
-            "valor": valor,
-            "estacion_id": ESTACION_ID
-        }
+            payload = {
+                "valor": valor,
+                "estacion_id": estacion_id
+            }
 
-        headers = {
-            "Authorization": f"Bearer {TOKEN}"
-        }
+            headers = {
+                "Authorization": f"Bearer {TOKEN}"
+            }
 
-        try:
-
-            response = requests.post(
-                API_URL,
-                json=payload,
-                headers=headers
-            )
-
-            # ====================================
-            # ENVÍO EXITOSO
-            # ====================================
-
-            if response.ok:
-
-                print(f"[OK] Lectura enviada: {valor} cm")
+            try:
+                response = requests.post(
+                    API_URL,
+                    json=payload,
+                    headers=headers
+                )
 
                 # ====================================
-                # ALERTA DE INUNDACIÓN
+                # ENVÍO EXITOSO
                 # ====================================
+                if response.ok:
+                    if valor > 70:
+                        print(f"[ALERTA] Estación ID {estacion_id} -> ¡CRÍTICO! {valor} cm (Umbral superado)")
+                        hay_alerta_global = True
+                    else:
+                        print(f"[OK] Estación ID {estacion_id} -> {valor} cm (Nivel normal)")
 
-                if valor > 70:
-
-                    print("[ALERTA] Umbral de inundación superado")
-
-                    print("[MODO EMERGENCIA] Enviando cada 2 segundos")
-
-                    time.sleep(2)
-
+                # ====================================
+                # ERROR HTTP
+                # ====================================
                 else:
-
-                    print("[NORMAL] Enviando cada 10 segundos")
-
-                    time.sleep(10)
+                    print(f"[ERROR] Estación ID {estacion_id} -> Código HTTP: {response.status_code}")
+                    print(response.text)
 
             # ====================================
-            # ERROR HTTP
+            # ERROR DE CONEXIÓN
             # ====================================
+            except Exception as e:
+                print(f"[CRÍTICO] Estación ID {estacion_id} -> Sin conexión con el servidor: {e}")
 
-            else:
-
-                print(f"[ERROR] Código HTTP: {response.status_code}")
-
-                print(response.text)
-
-                time.sleep(5)
-
-        # ====================================
-        # ERROR DE CONEXIÓN
-        # ====================================
-
-        except Exception as e:
-
-            print(f"[CRÍTICO] No hay conexión con el servidor: {e}")
-
-            time.sleep(5)
+        print("-" * 50)
+        
+        # Si alguna estación está en alerta, el sistema acelera el envío global
+        if hay_alerta_global:
+            print("[MODO EMERGENCIA] Hay alertas activas. Próxima ronda en 3 segundos...\n")
+            time.sleep(3)
+        else:
+            print("[SISTEMA ESTABLE] Próxima ronda de telemetría en 10 segundos...\n")
+            time.sleep(10)
 
 # ============================================
 # MAIN
 # ============================================
 
 if __name__ == "__main__":
-
     enviar_telemetria()
