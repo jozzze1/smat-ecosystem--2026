@@ -8,9 +8,9 @@ class ApiService {
 
   final String baseUrl = "http://localhost:8000";
 
-  // ==============================
+
   // GET ESTACIONES
-  // ==============================
+
   Future<List<Estacion>> fetchEstaciones() async {
 
     final token = await AuthService().getToken();
@@ -39,9 +39,6 @@ class ApiService {
 
       print("BODY: ${response.body}");
 
-      // ==========================
-      // MANEJO 401
-      // ==========================
 
       if (response.statusCode == 401) {
 
@@ -50,9 +47,6 @@ class ApiService {
         throw Exception("Sesión expirada");
       }
 
-      // ==========================
-      // OK
-      // ==========================
 
       if (response.statusCode == 200) {
 
@@ -81,9 +75,8 @@ class ApiService {
     }
   }
 
-  // ==============================
   // GET HISTORIAL IoT
-  // ==============================
+
   Future<Map<String, dynamic>>
       fetchHistorial(
     int estacionId,
@@ -121,20 +114,12 @@ class ApiService {
         "BODY HISTORIAL: ${response.body}",
       );
 
-      // ==========================
-      // 401
-      // ==========================
-
       if (response.statusCode == 401) {
 
         await AuthService().logout();
 
         throw Exception("Sesión expirada");
       }
-
-      // ==========================
-      // OK
-      // ==========================
 
       if (response.statusCode == 200) {
 
@@ -157,9 +142,8 @@ class ApiService {
     }
   }
 
-  // ==============================
   // POST ESTACION
-  // ==============================
+
   Future<bool> crearEstacion(
 
     String nombre,
@@ -200,10 +184,6 @@ class ApiService {
         "STATUS POST: ${response.statusCode}",
       );
 
-      // ==========================
-      // 401
-      // ==========================
-
       if (response.statusCode == 401) {
 
         await AuthService().logout();
@@ -211,9 +191,6 @@ class ApiService {
         return false;
       }
 
-      // ==========================
-      // CREATED / OK
-      // ==========================
 
       return response.statusCode == 200 ||
           response.statusCode == 201;

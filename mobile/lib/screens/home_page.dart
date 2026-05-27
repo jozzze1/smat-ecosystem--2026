@@ -47,9 +47,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  // ==============================
   // CARGAR ESTACIONES
-  // ==============================
 
   Future<void> _load() async {
 
@@ -69,6 +67,7 @@ class _HomePageState extends State<HomePage> {
       });
 
       // CARGAR HISTORIAL
+
       await cargarHistorial();
 
     } catch (e) {
@@ -81,9 +80,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // ==============================
   // CARGAR TELEMETRÍA
-  // ==============================
 
   Future<void> cargarHistorial() async {
 
@@ -193,9 +190,7 @@ class _HomePageState extends State<HomePage> {
 
                     children: [
 
-                      // =========================
                       // ESTACIONES
-                      // =========================
 
                       const Padding(
                         padding: EdgeInsets.all(12),
@@ -225,9 +220,7 @@ class _HomePageState extends State<HomePage> {
 
                       const Divider(),
 
-                      // =========================
                       // TELEMETRÍA IoT
-                      // =========================
 
                       const Padding(
                         padding: EdgeInsets.all(12),
