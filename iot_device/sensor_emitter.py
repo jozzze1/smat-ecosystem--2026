@@ -7,7 +7,7 @@ API_URL = "http://localhost:8000/lecturas/"
 ESTACIONES_IDS = [1, 2, 3, 4]
 
 # PEGA AQUÍ TU TOKEN JWT
-TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3OTkwMjUzMH0.zUEdzVqAvxudKc6Lc6C7nCdVhIMbavpnukVZx6qk4nA"
+TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc4MTEwNTgzOH0.WI3_aeuW0Sj9HkirCEO2blLCvo2QTZ3MQXkzBYnemhQ"
 
 def leer_sensor_emulado():
     
